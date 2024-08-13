@@ -42,4 +42,18 @@ if res.status_code == 200:
 else:
     print(res)
 
+## Pulling data from posts
+## Target is to create table [subreddit, post_title, upvotes, timestamp]
+## Table should be sufficient to run a simple regression based analysis as a proof of concept
+def top_daily_posts(subreddit):
+    url = f"https://oauth.reddit.com/r/{subreddit}/hot"
+    try:
+        response = requests.get(url, headers=headers, verify= False)
+        for post in response.json()['data']['children']:
+            print(post['data']['title'])
+            print(post['data']['ups'])
+    except requests.RequestException as e:
+        print(f"Error fetching data from Reddit: {e}")
+
+top_daily_posts("News")
 
