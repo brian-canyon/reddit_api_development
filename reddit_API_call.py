@@ -2,6 +2,8 @@ import requests
 import urllib3
 import time
 import pandas as pd
+from datetime import datetime
+from sqlalchemy import create_engine
 urllib3.disable_warnings() ## Having trouble with SSL, below code not suited for production
 
 def get_login_credentials():
@@ -32,24 +34,33 @@ def get_reddit_token():
 
 def top_daily_posts(subreddit, token):
     url = f"https://oauth.reddit.com/r/{subreddit}/hot"
-    post_info_df = pd.DataFrame(columns=['subreddit', 'post_title', 'upvote_count', 'upvote_ratio'])
+    post_info_df = pd.DataFrame(columns=['SUBREDDIT', 'POST_TITLE', 'UPVOTE_COUNT', 'UPVOTE_RATIO', 'TIMESTAMP'])
     index = len(post_info_df) + 1
+    now = datetime.now()
     try:
         response = requests.get(url, headers=token, verify= False)
         for post in response.json()['data']['children']:
-            post_info_df = pd.concat([pd.DataFrame([[subreddit, post['data']['title'], post['data']['ups'], post['data']['upvote_ratio']]],
-                                                    columns= post_info_df.columns), post_info_df], ignore_index= True)
+            post_info_df = pd.concat([pd.DataFrame([[subreddit, post['data']['title'], post['data']['ups'], post['data']['upvote_ratio'],
+                                                    now.strftime("%Y-%m-%d %H:%M:%S")]], columns= post_info_df.columns), post_info_df],
+                                                    ignore_index= True)
 
     except requests.RequestException as e:
         print(f"Error fetching data from Reddit: {e}")
     return post_info_df
 
 def main():
+    ## Get token
     token = get_reddit_token()
-    for i in range(1,10):
-        print(top_daily_posts("News", token))
+
+    ## SQL Connection info
+    database = 'master'
+    server = 'localhost\\SQLEXPRESS'
+    connection_string = f"mssql+pyodbc://@{server}/{database}?driver=ODBC+Driver+17+for+SQL+Server&trusted_connection=yes"
+    engine = create_engine(connection_string)
+
+    ## Inserting data
+    for i in range(1,100):
+        top_daily_posts("News", token).to_sql('Reddit_Playground', con=engine, if_exists='append', index=False)
         time.sleep(5)
 main()
-
-
 

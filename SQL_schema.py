@@ -1,7 +1,6 @@
-import pandas as pd
 from sqlalchemy import create_engine, text
 
-# Replace 'your_database' with your actual database name
+# Connection information
 database = 'master'
 server = 'localhost\SQLEXPRESS'
 
@@ -10,5 +9,14 @@ engine = create_engine(connection_string)
 
 # Test the connection
 with engine.connect() as connection:
-    result = connection.execute(text("SELECT * FROM [msdb].[dbo].[sysjobs]"))
-    print(result.fetchone())
+    SQL_script = """
+    CREATE TABLE Reddit_Playground(
+    POST_TITLE NVARCHAR(255),
+    SUBREDDIT NVARCHAR(255),
+    TIMESTAMP DATETIME,
+    UPVOTE_COUNT INT,
+    UPVOTE_RATIO FLOAT
+    );
+    """
+    result = connection.execute(text(SQL_script))
+    ##print(result.fetchone())
