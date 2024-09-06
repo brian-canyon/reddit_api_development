@@ -61,6 +61,5 @@ def main():
     ## Inserting data
     for i in range(1,100):
         top_daily_posts("News", token).to_sql('Reddit_Playground', con=engine, if_exists='append', index=False)
-        time.sleep(5)
+        time.sleep(1)
 main()
-
