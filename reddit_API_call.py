@@ -59,7 +59,7 @@ def main():
     engine = create_engine(connection_string)
 
     ## Inserting data
-    for i in range(1,100):
+    for i in range(1,100000):
         top_daily_posts("News", token).to_sql('Reddit_Playground', con=engine, if_exists='append', index=False)
-        time.sleep(1)
+        #time.sleep(1)
 main()
