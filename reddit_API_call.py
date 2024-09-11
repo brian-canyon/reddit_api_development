@@ -35,7 +35,6 @@ def get_reddit_token():
 def top_daily_posts(subreddit, token):
     url = f"https://oauth.reddit.com/r/{subreddit}/hot"
     post_info_df = pd.DataFrame(columns=['SUBREDDIT', 'POST_TITLE', 'UPVOTE_COUNT', 'UPVOTE_RATIO', 'TIMESTAMP'])
-    index = len(post_info_df) + 1
     now = datetime.now()
     try:
         response = requests.get(url, headers=token, verify= False)
@@ -59,7 +58,8 @@ def main():
     engine = create_engine(connection_string)
 
     ## Inserting data
-    for i in range(1,100000):
+    for i in range(1,2):
         top_daily_posts("News", token).to_sql('Reddit_Playground', con=engine, if_exists='append', index=False)
         #time.sleep(1)
+        print(top_daily_posts("News", token))
 main()
