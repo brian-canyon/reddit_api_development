@@ -30,10 +30,17 @@ def get_reddit_token():
 
 ## Creating a function to pull all comments from a speicific sub, in the last 24 hours
 subreddit = "News"
-url = f"https://oauth.reddit.com/r/news/comments/consumer_inflation_slows_to_lowest_rate_since"
+url = f"https://oauth.reddit.com/r/news/comments/1fedyg4/consumer_inflation_slows_to_lowest_rate_since"
 token = get_reddit_token()
 response = requests.get(url, headers=token, verify= False)
+counter = 0
 if response.status_code == 200:
-    print(response.json())
+    for i in response.json()[1]['data']['children']:
+        print(type(i))
+        counter = counter + 1
+    
+    #print(len(response.json()[1]['data']['children']))
 else:
     print(response.status_code)
+
+print(counter)
