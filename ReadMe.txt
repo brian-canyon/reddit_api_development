@@ -21,3 +21,7 @@ For this project, I created a SQL database that is hosted on my local macheine.
 Authentication to this database is supported by the sqlalchemy libary. Once 
 authentication parameters are identified, pandas has a built in function 'to_sql'
 that makes inserting data to SQL a breeze.
+
+The entire ETL process can be found in the file 'reddit_API_call'. A second python
+file exists 'SQL_schema' exists to showcase the schema used to insert data to the 
+database.
