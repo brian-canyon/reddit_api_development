@@ -36,7 +36,10 @@ response = requests.get(url, headers=token, verify= False)
 counter = 0
 if response.status_code == 200:
     for i in response.json()[1]['data']['children']:
-        print(type(i))
+        try:
+            print(i['data']['body'])
+        except:
+            print("keyerror")
         counter = counter + 1
     
     #print(len(response.json()[1]['data']['children']))
