@@ -1,5 +1,6 @@
 import requests
 import urllib3
+import json
 urllib3.disable_warnings() ## Having trouble with SSL, below code not suited for production
 
 def get_login_credentials():
@@ -29,21 +30,24 @@ def get_reddit_token():
     return headers
 
 ## Creating a function to pull all comments from a speicific sub, in the last 24 hours
-subreddit = "News"
-url = f"https://oauth.reddit.com/r/news/comments/1fedyg4/consumer_inflation_slows_to_lowest_rate_since"
+subreddit = "AloYoga"
 token = get_reddit_token()
 
-post_url = f"https://oauth.reddit.com/r/{subreddit}/hot"
+post_url = f"https://oauth.reddit.com/r/{subreddit}/new"
 response = requests.get(post_url, headers=token, verify= False)
 post_id_list = []
+post_name_list = []
 for post in response.json()['data']['children']:
     post_id_list.append(post['data']['permalink'])
-
-for post in post_id_list:
-    url=f"https://oauth.reddit.com{post}"
+    post_name_list.append(post['data']['title'])
+for (id, name) in zip(post_id_list, post_name_list):
+    url=f"https://oauth.reddit.com{id}"
     response = requests.get(url, headers=token, verify= False)
-    for i in response.json()[1]['data']['children']:
+    for post in response.json()[1]['data']['children']:
         try:
-            print(i['data']['body'])
+            #print(post['data']['author'])
+            #print(post['data']['body'])
+            #print(name)
+            print(post)
         except:
             print("keyerror")
