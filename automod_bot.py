@@ -32,18 +32,18 @@ def get_reddit_token():
 subreddit = "News"
 url = f"https://oauth.reddit.com/r/news/comments/1fedyg4/consumer_inflation_slows_to_lowest_rate_since"
 token = get_reddit_token()
-response = requests.get(url, headers=token, verify= False)
-counter = 0
-if response.status_code == 200:
+
+post_url = f"https://oauth.reddit.com/r/{subreddit}/hot"
+response = requests.get(post_url, headers=token, verify= False)
+post_id_list = []
+for post in response.json()['data']['children']:
+    post_id_list.append(post['data']['permalink'])
+
+for post in post_id_list:
+    url=f"https://oauth.reddit.com{post}"
+    response = requests.get(url, headers=token, verify= False)
     for i in response.json()[1]['data']['children']:
         try:
             print(i['data']['body'])
         except:
             print("keyerror")
-        counter = counter + 1
-    
-    #print(len(response.json()[1]['data']['children']))
-else:
-    print(response.status_code)
-
-print(counter)
